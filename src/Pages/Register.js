@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { IoEyeOff } from "react-icons/io5";
 import { IoEye } from "react-icons/io5";
 import {
+    Link,
     useNavigate
 } from "react-router-dom";
 
@@ -136,6 +137,8 @@ const Register = () => {
                             {showPassword ? <IoEye size="1.5em"/> : <IoEyeOff size="1.5em"/>}
                         </button>
                     </div>
+
+                    <div className="fw-semibold mt-2 mb-3">Already have account? <Link to="/Login">Sign In</Link></div>
 
                     <div>
                         <button type="submit" className="border-0 bg-primary rounded-2 w-100 fs-4 fw-semibold py-2 mt-4">Sign Up</button>
