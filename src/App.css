@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+.hover-pointer:hover {cursor: pointer}
+
+.no-outline:focus {
+  outline: none;
+}
