@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import { toast } from "react-toastify";
-import { IoEyeOff } from "react-icons/io5";
-import { IoEye } from "react-icons/io5";
-import {
-    Link,
-    useNavigate
-} from "react-router-dom";
+import { IoEyeOff, IoEye } from "react-icons/io5";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -26,7 +22,7 @@ const Register = () => {
             progress: undefined,
             theme: "dark",
         });
-    }
+    };
 
     const handleUsernameChange = (e) => setUsername(e.target.value);
     const handleEmailChange = (e) => setEmail(e.target.value);
@@ -37,14 +33,14 @@ const Register = () => {
     const isEmailValid = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
-    }
+    };
 
     const isPasswordValid = (password) => {
         const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
         return passwordRegex.test(password);
-    }
+    };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (username.length < 3) {
@@ -67,9 +63,43 @@ const Register = () => {
             return;
         }
 
-        // If all validations pass
-        console.log(username, email, password);
-    }
+        const userData = {
+            name: username,
+            email: email,
+            password: password,
+        };
+
+        try {
+            const response = await fetch('https://biblioteka.mastiloviczoran.com/api/register', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*', // This is usually set by the server
+                },
+                body: JSON.stringify(userData),
+            });
+
+            // Check if the response status is not 2xx
+            if (!response.ok) {
+                const errorData = await response.json(); // Parse the response to get error details
+                const errorMessage = errorData.message || `Error: ${response.statusText}`;
+                throw new Error(errorMessage);
+            }
+
+            const data = await response.json();
+            console.log('Registration successful', data);
+            toast.success("Registration successful!");
+            navigate('/login'); // Redirect to a success page or another route
+
+        } catch (err) {
+            console.error('Registration failed', err);
+            toast.error(`Registration failed: ${err.message}`);
+            handleError(err.message); // Use handleError to display the error message
+        }
+
+
+    };
 
     return (
         <div className="container vh-100 d-flex align-items-center justify-content-center w-100">
@@ -119,7 +149,7 @@ const Register = () => {
                         </button>
                     </div>
 
-                    <div className="d-flex flex-column align-items-start pb-3 position-relative ">
+                    <div className="d-flex flex-column align-items-start pb-3 position-relative">
                         <label className="text-secondary fw-semibold fs-5 pb-2">Re-enter Password*</label>
                         <input
                             className="border-0 d-block w-100 text-secondary fw-semibold p-2 rounded-2"
@@ -138,7 +168,7 @@ const Register = () => {
                         </button>
                     </div>
 
-                    <div className="fw-semibold mt-2 mb-3">Already have account? <Link to="/Login">Sign In</Link></div>
+                    <div className="fw-semibold mt-2 mb-3">Already have an account? <Link to="/Login">Sign In</Link></div>
 
                     <div>
                         <button type="submit" className="border-0 bg-primary rounded-2 w-100 fs-4 fw-semibold py-2 mt-4">Sign Up</button>
@@ -147,6 +177,6 @@ const Register = () => {
             </div>
         </div>
     );
-}
+};
 
 export default Register;

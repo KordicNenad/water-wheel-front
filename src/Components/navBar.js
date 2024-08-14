@@ -33,16 +33,26 @@ const NavBar = () => {
                                <Link className="nav-link active" aria-current="page" to="/">Home</Link>
                            </li>
                            <li className="nav-item">
-                               <Link className="nav-link" to="/about">About</Link>
+                               <Link className="nav-link" to="/allmovies">All Movies</Link>
+                           </li>
+                           <li className="nav-item">
+                               <Link className="nav-link" to="/favorite">Favorite</Link>
                            </li>
 
                        </ul>
                    </div> : <div className="d-flex w-100 align-items-center justify-content-center align-items-center ">
-                       <input type="text" placeholder="Search Movies..." className="w-50 border-0 rounded-4 py-2 shadow-sm text-center opacity-50" />
+                   <input type="text" placeholder="Search Movies..." className="w-50 border-0 rounded-4 py-2 shadow-sm text-center opacity-50" />
                    </div>}
 
-                   <Link className="nav-link fw-bold align-items-center text-nowrap fs-5" aria-current="page" to="/register">Register →</Link>
-               </div>
+
+                   {localStorage.getItem("_auth") ?
+                       <Link className="nav-link fw-bold align-items-center text-nowrap fs-5" aria-current="page" to="/profile">Hello, {localStorage.getItem("_name")} →</Link>
+
+                       :
+
+                       <Link className="nav-link fw-bold align-items-center text-nowrap fs-5" aria-current="page" to="/register">Register →</Link>
+                   }
+                    </div>
 
 
 

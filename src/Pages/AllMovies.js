@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Footer from '../Components/footer';
 import NavBar from '../Components/navBar';
-import MoviesReel from '../Components/movieReel';
 
-const Home = () => {
+const AllMovies = () => {
     const [popularM, setPopularM] = useState([]);
 
     useEffect(() => {
@@ -28,10 +27,7 @@ const Home = () => {
 
 
             <main>
-               <MoviesReel genre={"12"} alt="Adventure"/>
-               <MoviesReel genre={"14"} alt="Adventure"/>
-               <MoviesReel genre={"16"} alt="Adventure"/>
-               <MoviesReel genre={"27"} alt="Adventure"/>
+
             </main>
 
             <footer>
@@ -41,4 +37,4 @@ const Home = () => {
     );
 }
 
-export default Home;
+export default AllMovies;
