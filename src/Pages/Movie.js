@@ -8,7 +8,7 @@ const Movie = () => {
     useEffect(() => {
         const fetchMovie = async () => {
             try {
-                const response = await fetch('https://biblioteka.mastiloviczoran.com/api/movie/748783', {
+                const response = await fetch(`https://biblioteka.mastiloviczoran.com/api/movie/${id}`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json'

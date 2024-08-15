@@ -21,13 +21,13 @@ const AllMovies = () => {
     return (
         <div>
             <header>
-                <NavBar />
+                <NavBar/>
+                <div className="my-5 text-center fs-1 fw-bolder py-5 bg-dark-subtle">Different movie FIlteres</div>
             </header>
 
 
-
             <main>
-
+                <div className="my-5 text-center fs-1 fw-bolder py-5 bg-dark-subtle">List of Filtered Movies</div>
             </main>
 
             <footer>

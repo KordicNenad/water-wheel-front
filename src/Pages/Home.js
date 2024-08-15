@@ -23,6 +23,8 @@ const Home = () => {
         <div>
             <header>
                 <NavBar />
+
+                <div className="my-5 text-center fs-1 fw-bolder py-5 bg-dark-subtle">Big Sliding Cards Of Movies</div>
             </header>
 
 
