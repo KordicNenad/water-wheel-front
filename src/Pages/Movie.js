@@ -6,6 +6,7 @@ import { BsArrowRightSquareFill } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import { IoTimeOutline } from "react-icons/io5";
 import { MdFavoriteBorder } from "react-icons/md";
+import { MdReply } from "react-icons/md";
 
 const Movie = () => {
     const navigate = useNavigate();
@@ -14,7 +15,11 @@ const Movie = () => {
     const [comments, setComments] = useState([]);
     const [releaseDate, setReleaseDate] = useState();
     const [newComment, setNewComment] = useState("");
+    const [newCommentReply, setNewCommentReply] = useState("");
     const [isFavorite, setIsFavorite] = useState();
+    const [showWriteReply, setShowWriteReply] = useState()
+    const [parentID, setParentID] = useState();
+
 
     const authToken = localStorage.getItem('_auth');
 
@@ -156,9 +161,44 @@ const Movie = () => {
         }
     };
 
+
+
+    const handleCommentReplyChange = (event) => {
+        setNewCommentReply(event.target.value);
+    };
+
+    const handleCommentReplySubmit = async (event) => {
+        console.log("test")
+        const authToken = localStorage.getItem("_auth");
+
+        try {
+            console.log("tr")
+            const response = await fetch(`https://biblioteka.mastiloviczoran.com/api/movie/${id}/comment?comment=${encodeURIComponent(newComment)}&parent_id=${parentID}`, {
+                method: 'POST',
+                headers: {
+                    'Accept': '*/*',
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            console.log(response)
+
+            if (response.ok) {
+                const updatedComments = [...comments, { comment: newComment }]; // Assuming the API returns the new comment
+                setComments(updatedComments);
+                setNewComment(""); // Clear the comment input
+            } else {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error posting the comment:', error);
+        }
+    };
+
     return (
         <div className="container pt-5 pb-5 d-flex align-items-center justify-content-center w-100 d-flex flex-column">
-            <div className="w-75 p-3 shadow rounded-lg rounded-4 p-4">
+            <div className="w-75 p-3 shadow rounded-lg rounded-4 p-4 position-relative">
                 <div onClick={() => navigate(-1)} className="hover-pointer text-decoration-underline fs-5 mb-2 no-outline">← Back</div>
                 {movie ? (
                     <div>
@@ -184,28 +224,32 @@ const Movie = () => {
                                 <div>
                                     {movie.overview}
                                 </div>
-                                <div className="d-flex flex-column mt-3">
-                                    <div className="d-flex align-content-center align-items-center">
-                                        <BsArrowRightSquareFill/>
-                                        <div className="ms-2 fw-bold me-2">Genre:</div>
-                                        {movie.genres?.map((genre, index) => (
-                                            <div className="me-2 fs-6" key={index}>{genre.title}</div>
-                                        ))}
-                                    </div>
-                                    <div className="d-flex align-content-center align-items-center">
-                                        <BsArrowRightSquareFill/>
-                                        <div className="ms-2 fw-bold me-2">Relese Date:</div>
-                                        {movie.release_date}
-                                    </div>
+                                <div className="d-flex flex-column mt-3 ">
+                                    <div>
+                                        <div className="d-flex align-content-center align-items-center">
+                                            <BsArrowRightSquareFill/>
+                                            <div className="ms-2 fw-bold me-2">Genre:</div>
+                                            {movie.genres?.map((genre, index) => (
+                                                <div className="me-2 fs-6" key={index}>{genre.title}</div>
+                                            ))}
+                                        </div>
+                                        <div className="d-flex align-content-center align-items-center">
+                                            <BsArrowRightSquareFill/>
+                                            <div className="ms-2 fw-bold me-2">Relese Date:</div>
+                                            {movie.release_date}
+                                        </div>
 
-                                    <div className="d-flex align-content-center align-items-center">
-                                        <BsArrowRightSquareFill/>
-                                        <div className="ms-2 fw-bold me-2">Actors:</div>
-                                        {movie.genres?.map((genre, index) => (
-                                            <div className="me-2 fs-6" key={index}>{genre.title}</div>
-                                        ))}
+                                        <div className="d-flex align-content-center align-items-center">
+                                            <BsArrowRightSquareFill/>
+                                            <div className="ms-2 fw-bold me-2">Actors:</div>
+                                            {movie.genres?.map((genre, index) => (
+                                                <div className="me-2 fs-6" key={index}>{genre.title}</div>
+                                            ))}
+                                        </div>
                                     </div>
-                                    <div className="fs-3" onClick={() => {FavoriteMovie()}}><MdFavoriteBorder /></div>
+                                    <div className="fs-3 bottom-0 text-end pe-4 pb-4"  style={{ position: 'absolute', bottom: 0, right: 0 }} onClick={() => {
+                                        FavoriteMovie()
+                                    }}><MdFavoriteBorder size={40}/></div>
                                 </div>
                             </div>
                         </div>
@@ -239,13 +283,45 @@ const Movie = () => {
                         {comments.length > 0 ? (
                             comments.map((comment, index) => (
                                 <div key={index}>
-                                    <div className="mb-4 border-bottom">
+                                    <div className="mb-4 pb-2 border-bottom">
                                         <div className="d-flex align-items-center">
                                             <div className="fw-bolder fs-4">{comment.user_name}</div>
-                                            <div className="fs-6 ms-3 fw-lighter"><IoTimeOutline className="mb-1"/> {comment.created_at.slice(2,10)}</div>
+                                            <div className="fs-6 ms-3 fw-lighter"><IoTimeOutline
+                                                className="mb-1"/> {comment.created_at.slice(2, 10)}</div>
                                         </div>
                                         <div className="ms-4 mt-1 fw-semibold"> {comment.comment}</div>
+
+
+                                        {showWriteReply == comment.id ? <div>
+                                            <form
+                                                className="d-flex flex-column w-75 mt-3 ms-4 align-items-center justify-content-center"
+                                                onSubmit={() => {handleCommentReplySubmit(this); setParentID(comment.id)}}>
+                        <textarea
+                            placeholder="Join the discussion"
+                            className="w-100 px-2 pb-5 border-0 py-2 shadow-sm text-start opacity-50 text-wrap"
+                            rows="4"
+                            value={newCommentReply}
+                            onChange={handleCommentReplyChange}
+                        ></textarea>
+
+                                                <div className="mb-3 d-flex w-100 text-end justify-content-end">
+                                                    <button
+                                                        className="border-0 bg-primary rounded-2 w-25 fs-6 fw-semibold px-0 mx-0 mt-2 bg-transparent"
+                                                        onClick={() => {setShowWriteReply(null)}} >Close
+                                                    </button>
+
+                                                    <button
+                                                        className="border-0 bg-primary rounded-2 w-25 fs-6 fw-semibold py-2 mt-2"
+                                                        type="submit">Post
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div> : <div className="ms-5 mt-2 hover-pointer" onClick={() => {
+                                            setShowWriteReply(comment.id);
+                                        }}><MdReply/> Reply</div>}
+
                                     </div>
+
 
                                 </div>
                             ))

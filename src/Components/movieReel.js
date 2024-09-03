@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { BsArrowRightSquareFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import Slider from "react-slick";
 
 const MovieReel = ({ genre }) => {
     const [movies, setMovies] = useState([]);
     const [genreName, setGenreName] = useState('');
+
+    const settings = {
+        className: "center",
+        centerMode: true,
+        infinite: true,
+        centerPadding: "0px",
+        slidesToShow: 7,
+        speed: 500
+    };
+
 
     useEffect(() => {
         console.log(genre);
@@ -37,42 +48,53 @@ const MovieReel = ({ genre }) => {
                        {movies.map((genre) => (
 
                            <div key={genre.id} >
-                               <div className="fs-3 fw-bold ms-4 justify-content-center align-items-center">
+                               <div className="fs-3 fw-bold ms-4 justify-content-center align-items-center ">
                                    <BsArrowRightSquareFill/> {genre.title}
                                </div>
-                               <ul className="d-flex">
-                                   {genre.movies.map((movie) => (
-                                       <Link className="d-flex" key={movie.id} to={`/movie/${movie.id}`} onClick={() => {
-                                   console.log(movie.id)
-                               }}>
-                                   <div
-                                       className="container-card inside-shadow text-start m-2 rounded-2 overflow-hidden">
-                                       <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
-                                            alt={movie.title}/>
-                                       <div
-                                           className="card-bottom-left d-flex flex-column align-items-start justify-content-start">
-                                           <h3 className="fw-bold">{movie.title}</h3>
-                                           <div className="d-flex">
-                                               {movie.genres?.slice(0, 2).map((genre, index) => (
-                                                   <div className="me-2 fs-6" key={index}>{genre.title}</div>
-                                               ))}
-                                           </div>
-                                       </div>
-                                       <div className="card-top-right fw-bold fs-6">
-                                           <p>{movie.adult ? '18+' : ''}</p>
-                                       </div>
+
+
+                               <div className="mx-5 mb-5">
+                                   <div className="slider-container">
+                                       <Slider {...settings}>
+
+                                           {genre.movies.map((movie) => (
+                                               <Link className="d-flex" key={movie.id} to={`/movie/${movie.id}`}
+                                                     onClick={() => {
+                                                         console.log(movie.id)
+                                                     }}>
+                                                   <div
+                                                       className="container-card inside-shadow text-start m-2 rounded-2 overflow-hidden">
+                                                       <img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+                                                            alt={movie.title}/>
+                                                       <div
+                                                           className="card-bottom-left d-flex flex-column align-items-start justify-content-start">
+                                                           <h3 className="fw-bold">{movie.title}</h3>
+                                                           <div className="d-flex">
+                                                               {movie.genres?.slice(0, 2).map((genre, index) => (
+                                                                   <div className="me-2 fs-6"
+                                                                        key={index}>{genre.title}</div>
+                                                               ))}
+                                                           </div>
+                                                       </div>
+                                                       <div className="card-top-right fw-bold fs-6">
+                                                           <p>{movie.adult ? '18+' : ''}</p>
+                                                       </div>
+                                                   </div>
+                                               </Link>
+                                           ))}
+                                       </Slider>
                                    </div>
-                               </Link>
-                           ))}
-                       </ul>
+                               </div>
+
+
+                           </div>
+                       ))}
                    </div>
-               ))}
+               ) : null}
             </div>
-            ) : null}
         </div>
-</div>
-)
-    ;
+    )
+        ;
 }
 
 export default MovieReel;
